@@ -1,37 +1,38 @@
 package com.example.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 
 @Service
 public class DateService {
+    @Autowired
+    ResourceLoader resourceLoader;
 
     public String getDateFormat(String date) throws IOException {
 
         SimpleDateFormat sdf = new SimpleDateFormat();
-        URL resource = getClass().getClassLoader().getResource("dateFormat.txt");
+        Resource resource = resourceLoader.getResource("classpath:" + File.separator + "dateFormat.txt");
+
         BufferedReader bufferedReader = null;
-        if (resource != null) {
-            bufferedReader = new BufferedReader(new FileReader(resource.getPath()));
-            String line = bufferedReader.readLine();
-            while (line != null) {
-                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(line);
-                if (isCorrectFormat(date, dateFormat)) return line;
-                if (getDateBySDF(date, sdf, line)) return line;
-                line = bufferedReader.readLine();
-            }
+        bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+        String line = bufferedReader.readLine();
+        while (line != null) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(line);
+            if (isCorrectFormat(date, dateFormat)) return line;
+            if (getDateBySDF(date, sdf, line)) return line;
+            line = bufferedReader.readLine();
         }
-
-
         return "No Format found";
-
     }
 
     private boolean getDateBySDF(String date, SimpleDateFormat sdf, String s) {
