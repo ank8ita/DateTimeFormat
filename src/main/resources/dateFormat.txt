@@ -1,3 +1,5 @@
+yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+HH:mm:ss.SSSXXX
 yyyy-MM-dd
 dd-MMM-yyyy
 dd/MM/yyyy
@@ -5,8 +7,10 @@ E, MMM dd yyyy
 h:mm a
 EEEE, MMM dd, yyyy HH:mm:ss a
 yyyy-MM-dd'T'HH:mm:ssZ
+yyyy-MM-dd HH:mm:ss.SSS'Z'
 hh 'o''clock' a, zzzz
 K:mm a, z
 dd MM, yyyy
 yyyy/MM/dd
 yy/MM/dd
+

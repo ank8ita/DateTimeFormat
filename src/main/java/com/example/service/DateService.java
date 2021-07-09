@@ -11,28 +11,32 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class DateService {
     @Autowired
     ResourceLoader resourceLoader;
 
-    public String getDateFormat(String date) throws IOException {
+    public List<String> getDateFormat(String date) throws IOException {
 
+        List<String> format = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat();
         Resource resource = resourceLoader.getResource("classpath:" + File.separator + "dateFormat.txt");
 
-        BufferedReader bufferedReader = null;
-        bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
         String line = bufferedReader.readLine();
         while (line != null) {
             DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(line);
-            if (isCorrectFormat(date, dateFormat)) return line;
-            if (getDateBySDF(date, sdf, line)) return line;
+            if (isCorrectFormat(date, dateFormat) && !format.contains(line)) format.add(line);
+            if (getDateBySDF(date, sdf, line) && !format.contains(line)) format.add(line);
             line = bufferedReader.readLine();
         }
-        return "No Format found";
+        return format.isEmpty() ? Collections.singletonList("No Format found") : format;
     }
 
     private boolean getDateBySDF(String date, SimpleDateFormat sdf, String s) {
@@ -55,10 +59,10 @@ public class DateService {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        DateService dateService = new DateService();
-        System.out.println(dateService.getDateFormat("2019-02-20"));
+    public static void main(String[] args) {
+        System.out.println(LocalDate.now());
 
     }
+
 
 }
